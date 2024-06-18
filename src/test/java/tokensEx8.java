@@ -67,7 +67,12 @@ public class tokensEx8 {
          Умножаем на 1000 т.к. функция ждет значение в милисекундах
          */
         System.out.println("Шаг3: ожидаем время выполнения: " +  mySec + "сек");
-        Thread.sleep(mySec*1000);
+        try {
+            Thread.sleep(mySec*1000);
+        } catch (InterruptedException e) {
+            // Обработка исключения, если поток был прерван во время сна
+            e.printStackTrace();
+        }
 
         /*
          4. Проверяем что отработало
