@@ -57,7 +57,6 @@ public class UserAuthTestEx14 extends BaseTestCase {
                         this.header,
                         this.cookie );
 
-
         Assertions.assertJsonByName(responceCheckAuth, "user_id", this.userIdOnAuth);
     }
 
@@ -66,9 +65,6 @@ public class UserAuthTestEx14 extends BaseTestCase {
     @ParameterizedTest
     @ValueSource(strings = {"cookie", "headers"})
     public void testNegativeAuthUser(String condition){
-        RequestSpecification spec  = RestAssured.given();
-        spec.baseUri("https://playground.learnqa.ru/api/user/auth");
-
         if (condition.equals("cookie")) {
             Response responseForCheck = apiCoreRequests
                     .makedGetWithCookie("https://playground.learnqa.ru/api/user/auth",
@@ -82,6 +78,5 @@ public class UserAuthTestEx14 extends BaseTestCase {
         } else {
             throw new IllegalArgumentException("condition is not known: " + condition);
         }
-
     }
 }
