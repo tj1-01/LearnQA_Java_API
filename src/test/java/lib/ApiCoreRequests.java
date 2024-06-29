@@ -11,7 +11,7 @@ import static io.restassured.RestAssured.given;
 
 public class ApiCoreRequests {
     @Step("Make a GET-reqest with token and auth cookie")
-    public Response makedGetReauest(String url, String token, String cookie) {
+    public Response makedGetRequest(String url, String token, String cookie) {
         return given()
                 .filter(new AllureRestAssured())
                 .header(new Header("x-csrf-token", token))
@@ -34,6 +34,14 @@ public class ApiCoreRequests {
         return given()
                 .filter(new AllureRestAssured())
                 .header(new Header("x-csrf-token", token))
+                .get(url)
+                .andReturn();
+    }
+
+    @Step("Make a GET-reqest with out any data ")
+    public Response makedGetRequest(String url) {
+        return given()
+                .filter(new AllureRestAssured())
                 .get(url)
                 .andReturn();
     }
