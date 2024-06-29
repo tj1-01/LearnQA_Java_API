@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-@Epic("Get User info Cases")
-@Feature("UserInfo")
+@Epic("Get User Info Cases")
+@Feature("Reading")
 public class UserGetTest extends BaseTestCase {
 
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
@@ -62,18 +62,8 @@ public class UserGetTest extends BaseTestCase {
     @Description("Проверка недступности чужих данных")
     @DisplayName("Авторизированный запрос за чужими данные")
     public void testGetUserDetailsAuthAsAnotherUser() {
-        //GENERATE USER
-        Map<String, String> userData = DataGenerator.getRegistrationData();
-
-        Response responseCreateAuth = apiCoreRequests
-                .makedPostRequest(
-                        "https://playground.learnqa.ru/api/user/",
-                        userData);
-
-        //LOGIN USER
-        Response responseGetAuth = apiCoreRequests
-                .makedPostRequest("https://playground.learnqa.ru/api/user/login", userData);
-
+        //GENERATE USER AND LOGIN
+        Response responseGetAuth = createAndGetAuth();
         String header = this.getHeader(responseGetAuth, "x-csrf-token");
         String cookie = this.getCookie(responseGetAuth, "auth_sid");
 

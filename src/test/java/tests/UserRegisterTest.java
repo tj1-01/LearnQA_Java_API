@@ -58,12 +58,12 @@ public class UserRegisterTest extends BaseTestCase {
 
     @Test
     @Description("Тест проверяет невозможность зарегестрировать пользователя с некорректным email")
-    @DisplayName("Ошибка регистрации e-mail без знака @")
+    @DisplayName("Ошибка регистрации с невалидным e-mail")
     public void testCreateUserWithBrokenEmail() {
-        String email = DataGenerator.getRandomEmail().replace("@", ".");
+        String badEmail = DataGenerator.getBadEmail();
 
         Map<String, String> userData = new HashMap<>();
-        userData.put("email", email);
+        userData.put("email", badEmail);
         userData = DataGenerator.getRegistrationData(userData);
 
         Response responseCreateAuth = apiCoreRequests
@@ -79,7 +79,7 @@ public class UserRegisterTest extends BaseTestCase {
     @Description("Тест проверяет невозможность зарегестрировать пользователя с коротким именем")
     @DisplayName("Ошибка регистрации c длиной имени в 1 символ")
     public void testCreateUserShortName() {
-        String name = "A";
+        String name = DataGenerator.getNameByLenght(1);
 
         Map<String, String> userData = new HashMap<>();
         userData.put("username", name);
@@ -98,11 +98,7 @@ public class UserRegisterTest extends BaseTestCase {
     @Description("Тест проверяет невозможность зарегестрировать пользователя с длинным именем")
     @DisplayName("Ошибка регистрации c длиной имени длиннее 250 символов")
     public void testCreateUserTooLongName() {
-        //  Получим имя в 251 символ
-        String name = "A";
-        for (int i = 0; i < 250; i++) {
-            name = name + "A";
-        }
+        String name = DataGenerator.getNameByLenght(251);
 
         Map<String, String> userData = new HashMap<>();
         userData.put("username", name);

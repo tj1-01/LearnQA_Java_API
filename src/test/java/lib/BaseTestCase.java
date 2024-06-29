@@ -9,6 +9,8 @@ import static org.hamcrest.Matchers.hasKey;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BaseTestCase {
+    private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
+
     protected String getHeader(Response Response, String name){
         Headers headers = Response.getHeaders();
 
@@ -28,4 +30,19 @@ public class BaseTestCase {
         return Response.jsonPath().getInt(name);
     }
 
+    protected String getStringFromJson(Response Response, String name){
+        Response.then().assertThat().body("$", hasKey(name));
+        return Response.jsonPath().getString(name);
+    }
+
+    protected Response createAndGetAuth(){
+        //GENERATE USER
+        Map<String, String> userData = DataGenerator.getRegistrationData();
+        Response responseCreateAuth = apiCoreRequests
+                .makedPostRequest("https://playground.learnqa.ru/api/user/", userData);
+        //LOGIN
+        Response responseGetAuth = apiCoreRequests
+                .makedPostRequest("https://playground.learnqa.ru/api/user/login", userData);
+        return responseGetAuth;
+    }
 }
