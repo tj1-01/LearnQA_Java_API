@@ -1,5 +1,6 @@
 package lib;
 
+import io.qameta.allure.Step;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
 
@@ -10,6 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BaseTestCase {
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
+    public String apiBaseUrl = "https://playground.learnqa.ru/api/";
+    //public String apiBaseUrl = "https://playground.learnqa.ru/api_dev/";
 
     protected String getHeader(Response Response, String name){
         Headers headers = Response.getHeaders();
@@ -35,14 +38,13 @@ public class BaseTestCase {
         return Response.jsonPath().getString(name);
     }
 
-    protected Response createAndGetAuth(){
+    @Step("Create User and Auth")
+    public Response createAndGetAuth(){
         //GENERATE USER
         Map<String, String> userData = DataGenerator.getRegistrationData();
-        Response responseCreateAuth = apiCoreRequests
-                .makedPostRequest("https://playground.learnqa.ru/api/user/", userData);
+        Response responseCreateAuth = apiCoreRequests.makePostRequest(apiBaseUrl+"user/", userData);
         //LOGIN
-        Response responseGetAuth = apiCoreRequests
-                .makedPostRequest("https://playground.learnqa.ru/api/user/login", userData);
+        Response responseGetAuth = apiCoreRequests.makePostRequest(apiBaseUrl+"user/login", userData);
         return responseGetAuth;
     }
 }

@@ -10,8 +10,9 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 
 public class ApiCoreRequests {
-    @Step("Make a GET-reqest with token and auth cookie")
-    public Response makedGetRequest(String url, String token, String cookie) {
+
+    @Step("Make a GET-request with token and auth cookie")
+    public Response makeGetRequest(String url, String token, String cookie) {
         return given()
                 .filter(new AllureRestAssured())
                 .header(new Header("x-csrf-token", token))
@@ -20,8 +21,8 @@ public class ApiCoreRequests {
                 .andReturn();
     }
 
-    @Step("Make a GET-reqest with auth cookie only")
-    public Response makedGetWithCookie(String url, String cookie) {
+    @Step("Make a GET-request with auth cookie only")
+    public Response makeGetWithCookie(String url, String cookie) {
         return given()
                 .filter(new AllureRestAssured())
                 .cookie("auth_sid", cookie)
@@ -29,8 +30,8 @@ public class ApiCoreRequests {
                 .andReturn();
     }
 
-    @Step("Make a GET-reqest with token only")
-    public Response makedGetWithToken(String url, String token) {
+    @Step("Make a GET-request with token only")
+    public Response makeGetWithToken(String url, String token) {
         return given()
                 .filter(new AllureRestAssured())
                 .header(new Header("x-csrf-token", token))
@@ -38,16 +39,16 @@ public class ApiCoreRequests {
                 .andReturn();
     }
 
-    @Step("Make a GET-reqest with out any data ")
-    public Response makedGetRequest(String url) {
+    @Step("Make a GET-request with out any data ")
+    public Response makeGetRequest(String url) {
         return given()
                 .filter(new AllureRestAssured())
                 .get(url)
                 .andReturn();
     }
 
-    @Step("Make a POST-reqest")
-    public Response makedPostRequest(String url, Map<String, String> authData) {
+    @Step("Make a POST-request")
+    public Response makePostRequest(String url, Map<String, String> authData) {
         return given()
                 .filter(new AllureRestAssured())
                 .body(authData)
@@ -55,8 +56,8 @@ public class ApiCoreRequests {
                 .andReturn();
     }
 
-    @Step("Make a PUT-reqest with token, auth cookie, userData")
-    public Response makedPutRequest(String url, String token, String cookie, Map<String, String> userData) {
+    @Step("Make a PUT-request with token, auth cookie, userData")
+    public Response makePutRequest(String url, String token, String cookie, Map<String, String> userData) {
         return given()
                 .filter(new AllureRestAssured())
                 .header(new Header("x-csrf-token", token))
@@ -66,8 +67,8 @@ public class ApiCoreRequests {
                 .andReturn();
     }
 
-    @Step("Try to make a PUT-reqest with out token, auth cookie")
-    public Response unmakedPutRequest(String url, Map<String, String> userData) {
+    @Step("Try to make a PUT-request with out token, auth cookie")
+    public Response unmakePutRequest(String url, Map<String, String> userData) {
         return given()
                 .filter(new AllureRestAssured())
                 .body(userData)
@@ -75,7 +76,7 @@ public class ApiCoreRequests {
                 .andReturn();
     }
 
-    @Step("Delete data reqest with out token, auth cookie")
+    @Step("Delete data request with out token, auth cookie")
     public Response makeDeletedRequest(String url, String token, String cookie) {
         return given()
                 .filter(new AllureRestAssured())
@@ -84,7 +85,4 @@ public class ApiCoreRequests {
                 .delete(url)
                 .andReturn();
     }
-
-
-
 }

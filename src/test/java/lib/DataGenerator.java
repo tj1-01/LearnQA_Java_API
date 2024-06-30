@@ -19,7 +19,7 @@ public class DataGenerator {
 
     public static String getNameByLenght(int count) {
         String name = "A";
-        for (int i = 0; i <count-1; i++) {
+        for (int i = 0; i < count - 1; i++) {
             name = name + "A";
         }
         return name;

@@ -1,45 +1,49 @@
 package tests;
 
-import io.qameta.allure.Description;
-import io.qameta.allure.Epic;
-import io.qameta.allure.Feature;
-import io.restassured.RestAssured;
+import io.qameta.allure.*;
 import io.restassured.response.Response;
 import lib.ApiCoreRequests;
 import lib.Assertions;
 import lib.BaseTestCase;
 import lib.DataGenerator;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.qameta.allure.SeverityLevel.CRITICAL;
+
 @Epic("Register User Cases")
 @Feature("Creating")
+@Story("story1")
 public class UserRegisterTest extends BaseTestCase {
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
-    String url = "https://playground.learnqa.ru/api/user/";
+    String url = apiBaseUrl+"user/";
 
     @Test
-    @Description("Тест успешно регестрирует нового пользователя")
+    @Description("Успешная регестрирация нового пользователя")
     @DisplayName("Позитивный кейс авторизации")
+    @Severity(CRITICAL)
+    @AllureId("1.1")
     public void testCreateUserSuccessfully() {
         Map<String, String> userData = DataGenerator.getRegistrationData();
 
         Response responseCreateAuth = apiCoreRequests
-                .makedPostRequest(url, userData);
+                .makePostRequest(url, userData);
 
         Assertions.assertResponseCodeEquals(responseCreateAuth, 200);
         Assertions.assertJsonHasField(responseCreateAuth, "id");
     }
 
     @Test
-    @Description("Тест проверяет невозможность зарегестрировать пользователя с задвоением email")
+    @Description("Проверка уникальности email при регистрации")
     @DisplayName("Ошибка регистрации при повторном e-mail")
+    @Tag("Uncorrected_data")
+    @AllureId("1.2")
     public void testCreateUserWithExistingEmail() {
         String email = "vinkotov@example.com";
 
@@ -48,7 +52,7 @@ public class UserRegisterTest extends BaseTestCase {
         userData = DataGenerator.getRegistrationData(userData);
 
         Response responseCreateAuth = apiCoreRequests
-                .makedPostRequest(url, userData);
+                .makePostRequest(url, userData);
 
         Assertions.assertResponseCodeEquals(responseCreateAuth, 400);
         Assertions.assertResponseTextEquals(
@@ -57,8 +61,10 @@ public class UserRegisterTest extends BaseTestCase {
     }
 
     @Test
-    @Description("Тест проверяет невозможность зарегестрировать пользователя с некорректным email")
+    @Description("Проверка запрета регистрации на некорректный email")
     @DisplayName("Ошибка регистрации с невалидным e-mail")
+    @Tag("Uncorrected_data")
+    @AllureId("1.3")
     public void testCreateUserWithBrokenEmail() {
         String badEmail = DataGenerator.getBadEmail();
 
@@ -67,7 +73,7 @@ public class UserRegisterTest extends BaseTestCase {
         userData = DataGenerator.getRegistrationData(userData);
 
         Response responseCreateAuth = apiCoreRequests
-                .makedPostRequest(url, userData);
+                .makePostRequest(url, userData);
 
         Assertions.assertResponseCodeEquals(responseCreateAuth, 400);
         Assertions.assertResponseTextEquals(
@@ -78,6 +84,8 @@ public class UserRegisterTest extends BaseTestCase {
     @Test
     @Description("Тест проверяет невозможность зарегестрировать пользователя с коротким именем")
     @DisplayName("Ошибка регистрации c длиной имени в 1 символ")
+    @Tag("Uncorrected_data")
+    @AllureId("1.4")
     public void testCreateUserShortName() {
         String name = DataGenerator.getNameByLenght(1);
 
@@ -86,7 +94,7 @@ public class UserRegisterTest extends BaseTestCase {
         userData = DataGenerator.getRegistrationData(userData);
 
         Response responseCreateAuth = apiCoreRequests
-                .makedPostRequest(url, userData);
+                .makePostRequest(url, userData);
 
         Assertions.assertResponseCodeEquals(responseCreateAuth, 400);
         Assertions.assertResponseTextEquals(
@@ -97,6 +105,8 @@ public class UserRegisterTest extends BaseTestCase {
     @Test
     @Description("Тест проверяет невозможность зарегестрировать пользователя с длинным именем")
     @DisplayName("Ошибка регистрации c длиной имени длиннее 250 символов")
+    @Tag("Uncorrected_data")
+    @AllureId("1.5")
     public void testCreateUserTooLongName() {
         String name = DataGenerator.getNameByLenght(251);
 
@@ -105,7 +115,7 @@ public class UserRegisterTest extends BaseTestCase {
         userData = DataGenerator.getRegistrationData(userData);
 
         Response responseCreateAuth = apiCoreRequests
-                .makedPostRequest(url, userData);
+                .makePostRequest(url, userData);
 
         Assertions.assertResponseCodeEquals(responseCreateAuth, 400);
         Assertions.assertResponseTextEquals(
@@ -115,6 +125,8 @@ public class UserRegisterTest extends BaseTestCase {
 
     @Description("Тест проверяет невозможность зарегестрировать пользователя без какого-либо поля")
     @DisplayName("Тест неуспешной регистрации пользователя без поля")
+    @Tag("Uncorrected_data")
+    @AllureId("1.6")
     @ParameterizedTest
     @ValueSource(strings = {"username", "firstName", "lastName", "email", "password"})
     public void testCreateUserWithOutField(String condition) {
@@ -123,7 +135,7 @@ public class UserRegisterTest extends BaseTestCase {
         userData = DataGenerator.getRegistrationData(userData);
         userData.remove(condition);
         Response responseCreateAuth = apiCoreRequests
-                .makedPostRequest(url, userData);
+                .makePostRequest(url, userData);
 
         switch (condition) {
             case "username":

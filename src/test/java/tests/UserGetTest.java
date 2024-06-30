@@ -1,32 +1,34 @@
 package tests;
 
-import io.qameta.allure.Description;
-import io.qameta.allure.Epic;
-import io.qameta.allure.Feature;
-import io.restassured.RestAssured;
+import io.qameta.allure.*;
 import io.restassured.response.Response;
 import lib.ApiCoreRequests;
 import lib.Assertions;
 import lib.BaseTestCase;
-import lib.DataGenerator;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.qameta.allure.SeverityLevel.CRITICAL;
+
 @Epic("Get User Info Cases")
 @Feature("Reading")
+@Story("story2")
 public class UserGetTest extends BaseTestCase {
 
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
 
     @Test
     @Description("Проверка недоступности лишних данных без авторизации")
-    @DisplayName("Неавторизованный запрос на данные")
+    @DisplayName("Неавторизованный запрос")
+    @AllureId("2.1")
+    @Tag("Security")
     public void testGetUserDataNotAuth() {
         Response responseUserData = apiCoreRequests
-                .makedGetRequest("https://playground.learnqa.ru/api/user/2");
+                .makeGetRequest(apiBaseUrl+"user/2");
 
         Assertions.assertJsonHasField(responseUserData, "username");
 
@@ -37,6 +39,8 @@ public class UserGetTest extends BaseTestCase {
     @Test
     @Description("Проверка доступности всех данных с авторизацией")
     @DisplayName("Авторизированный запрос")
+    @Severity(CRITICAL)
+    @AllureId("2.2")
     public void testGetUserDetailsAuthAsSameUser() {
         //LOGIN USER NUMBER 2
         Map<String, String> authData = new HashMap<>();
@@ -45,14 +49,14 @@ public class UserGetTest extends BaseTestCase {
         authData.put("password", "1234");
 
         Response responseGetAuth = apiCoreRequests
-                .makedPostRequest("https://playground.learnqa.ru/api/user/login", authData);
+                .makePostRequest(apiBaseUrl+"user/login", authData);
 
         String header = this.getHeader(responseGetAuth, "x-csrf-token");
         String cookie = this.getCookie(responseGetAuth, "auth_sid");
 
         //GET DATA
         Response responseUserData = apiCoreRequests
-                .makedGetRequest("https://playground.learnqa.ru/api/user/2", header, cookie);
+                .makeGetRequest(apiBaseUrl+"user/2", header, cookie);
 
         String[] expectedFields = {"username", "firstName", "lastName", "email"};
         Assertions.assertJsonHasFields(responseUserData, expectedFields);
@@ -61,6 +65,8 @@ public class UserGetTest extends BaseTestCase {
     @Test
     @Description("Проверка недступности чужих данных")
     @DisplayName("Авторизированный запрос за чужими данные")
+    @Tag("Security")
+    @AllureId("2.3")
     public void testGetUserDetailsAuthAsAnotherUser() {
         //GENERATE USER AND LOGIN
         Response responseGetAuth = createAndGetAuth();
@@ -69,7 +75,7 @@ public class UserGetTest extends BaseTestCase {
 
         //GET DATA USER 2
         Response responseUserData = apiCoreRequests
-                .makedGetRequest("https://playground.learnqa.ru/api/user/2", header, cookie);
+                .makeGetRequest(apiBaseUrl+"user/2", header, cookie);
 
         Assertions.assertJsonHasField(responseUserData, "username");
 
